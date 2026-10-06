@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Volume2, Plus, Minus, Search, ArrowRight, CheckCircle2, XCircle, HelpCircle, Check, Sparkles } from 'lucide-react';
+import { Volume2, Plus, Minus, Search, ArrowRight, CheckCircle2, XCircle, HelpCircle, Check, Sparkles, RotateCw } from 'lucide-react';
 import { PlaceKey, PLACE_CONFIG, PlaceInfo } from '../types/math';
 import { readDecimalNumber, speakVietnamese } from '../utils/vietnameseNumberReader';
 import { sounds } from '../utils/audio';
 import { Fraction } from './Fraction';
+import { useOrientation } from '../context/OrientationContext';
 import confetti from 'canvas-confetti';
 
 interface PlaceValueTableProps {
@@ -149,6 +150,7 @@ const PLACE_PRACTICE_QUESTIONS: PlaceValuePracticeQuestion[] = [
 ];
 
 export const PlaceValueTable: React.FC<PlaceValueTableProps> = ({ onEarnStar }) => {
+  const { isLandscape, toggleForcedLandscape } = useOrientation();
   // Digits for each column
   const [digits, setDigits] = useState<Record<PlaceKey, number>>({
     hundreds: 3,
@@ -331,6 +333,18 @@ export const PlaceValueTable: React.FC<PlaceValueTableProps> = ({ onEarnStar }) 
             </button>
           </div>
         </form>
+      </div>
+
+      {/* Mobile Landscape Hint & Button */}
+      <div className="flex md:hidden items-center justify-between bg-slate-100 p-2 rounded-xl border border-slate-200">
+        <span className="text-xs text-slate-700 font-bold ml-1">Bảng các hàng:</span>
+        <button
+          onClick={toggleForcedLandscape}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-xs cursor-pointer active:scale-95"
+        >
+          <RotateCw className="w-3.5 h-3.5 text-amber-300" />
+          <span>{isLandscape ? 'Xoay dọc lại' : 'Xoay ngang màn hình'}</span>
+        </button>
       </div>
 
       {/* Main Interactive Place Value Table */}

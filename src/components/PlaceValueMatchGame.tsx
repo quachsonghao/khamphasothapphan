@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, Trophy, Star, Sparkles, CheckCircle2, XCircle, RotateCcw, ArrowRight, Layers, Link2, PlusCircle, Check, Eye, HelpCircle } from 'lucide-react';
+import { Volume2, Trophy, Star, Sparkles, CheckCircle2, XCircle, RotateCcw, ArrowRight, Layers, Link2, PlusCircle, Check, Eye, HelpCircle, RotateCw } from 'lucide-react';
 import { sounds } from '../utils/audio';
 import { speakVietnamese, readDecimalNumber } from '../utils/vietnameseNumberReader';
 import { Fraction } from './Fraction';
 import { PlaceKey, PLACE_CONFIG } from '../types/math';
+import { useOrientation } from '../context/OrientationContext';
 import confetti from 'canvas-confetti';
 
 interface PlaceValueMatchGameProps {
@@ -197,6 +198,7 @@ export interface ValueCardOption {
 }
 
 export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarnStar, totalStars = 0 }) => {
+  const { isLandscape, toggleForcedLandscape } = useOrientation();
   const [gameSubMode, setGameSubMode] = useState<'slotting' | 'trio-connect'>('slotting');
   const [mobileLayoutMode, setMobileLayoutMode] = useState<'two-blocks' | 'wide-table'>('two-blocks');
   const [challenges, setChallenges] = useState<MatchChallenge[]>(PRESET_CHALLENGES);
@@ -917,30 +919,38 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
         {gameSubMode === 'slotting' ? (
           <div className="space-y-5">
             {/* Mobile Layout Switcher (< 768px only) */}
-            <div className="flex md:hidden items-center justify-between bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-              <span className="text-xs font-bold text-slate-700 ml-1.5">Bố cục bảng:</span>
-              <div className="flex items-center gap-1">
+            <div className="flex md:hidden flex-wrap items-center justify-between gap-2 bg-slate-100 p-2 rounded-xl border border-slate-200">
+              <span className="text-xs font-bold text-slate-700 ml-1">Bố cục bảng:</span>
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setMobileLayoutMode('two-blocks')}
                   className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
-                    mobileLayoutMode === 'two-blocks' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600'
+                    mobileLayoutMode === 'two-blocks' && !isLandscape ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600'
                   }`}
                 >
-                  📱 2 Khối Rõ Ràng
+                  📱 2 Khối
                 </button>
                 <button
                   onClick={() => setMobileLayoutMode('wide-table')}
                   className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
-                    mobileLayoutMode === 'wide-table' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600'
+                    mobileLayoutMode === 'wide-table' || isLandscape ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600'
                   }`}
                 >
-                  ↔ Bảng Ngang (Cuộn)
+                  ↔ Bảng Ngang
+                </button>
+                <button
+                  onClick={toggleForcedLandscape}
+                  className="px-2.5 py-1 text-xs font-bold rounded-lg bg-indigo-600 text-white shadow-xs flex items-center gap-1 active:scale-95 cursor-pointer ml-1"
+                  title="Xoay ngang màn hình"
+                >
+                  <RotateCw className="w-3 h-3 text-amber-300" />
+                  <span>{isLandscape ? 'Dọc lại' : 'Xoay ngang'}</span>
                 </button>
               </div>
             </div>
 
             {/* DESKTOP VIEW & MOBILE WIDE-TABLE VIEW: Single Spacious Table */}
-            <div className={`${mobileLayoutMode === 'two-blocks' ? 'hidden md:block' : 'block'}`}>
+            <div className={`${mobileLayoutMode === 'two-blocks' && !isLandscape ? 'hidden md:block' : 'block'}`}>
               <div className="overflow-x-auto touch-scroll no-scrollbar -mx-2 px-2 sm:mx-0 sm:px-0">
                 <div className="min-w-[680px]">
                   {/* Top classification banner */}
@@ -973,7 +983,7 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
             </div>
 
             {/* MOBILE TWO-BLOCKS VIEW (< 768px): Super spacious, clear, 3-columns per block, no micro text */}
-            <div className={`space-y-4 ${mobileLayoutMode === 'two-blocks' ? 'block md:hidden' : 'hidden'}`}>
+            <div className={`space-y-4 ${mobileLayoutMode === 'two-blocks' && !isLandscape ? 'block md:hidden' : 'hidden'}`}>
               {/* BLOCK 1: Phần Nguyên */}
               <div className="bg-emerald-50/40 rounded-2xl p-3 border-2 border-emerald-300 space-y-2">
                 <div className="flex items-center justify-between pb-1.5 border-b border-emerald-200">

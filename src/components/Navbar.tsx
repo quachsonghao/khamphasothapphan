@@ -1,7 +1,8 @@
 import React from 'react';
-import { Volume2, VolumeX, BookOpen, Star, Sparkles, Layers, Grid, Edit3, Gamepad2 } from 'lucide-react';
+import { Volume2, VolumeX, BookOpen, Star, Sparkles, Layers, Edit3, Gamepad2, RotateCw } from 'lucide-react';
 import { MathMode } from '../types/math';
 import { sounds } from '../utils/audio';
+import { useOrientation } from '../context/OrientationContext';
 
 interface NavbarProps {
   currentMode: MathMode;
@@ -20,6 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenReference,
   totalStars,
 }) => {
+  const { isLandscape, toggleForcedLandscape } = useOrientation();
   const navTabs: { id: MathMode; label: string; shortLabel: string; icon: React.ReactNode }[] = [
     {
       id: 'place-value',
@@ -131,6 +133,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <BookOpen className="w-4 h-4 text-indigo-600" />
               <span className="hidden sm:inline">Sổ tay bí kíp</span>
+            </button>
+
+            {/* Screen Orientation / Landscape Toggle */}
+            <button
+              onClick={toggleForcedLandscape}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                isLandscape
+                  ? 'bg-amber-100 text-amber-900 border-amber-300 shadow-xs'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+              }`}
+              title={isLandscape ? 'Chuyển về màn hình dọc' : 'Xoay ngang màn hình để xem bảng to rõ hơn'}
+              aria-label="Xoay ngang màn hình"
+            >
+              <RotateCw className={`w-3.5 h-3.5 ${isLandscape ? 'text-amber-800' : 'text-indigo-600'}`} />
+              <span className="hidden sm:inline">{isLandscape ? 'Màn hình dọc' : 'Xoay ngang'}</span>
+              <span className="sm:hidden">{isLandscape ? 'Dọc' : 'Ngang'}</span>
             </button>
 
             {/* Sound Toggle */}
