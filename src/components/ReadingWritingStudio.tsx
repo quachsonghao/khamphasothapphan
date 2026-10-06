@@ -714,27 +714,27 @@ export const ReadingWritingStudio: React.FC<ReadingWritingStudioProps> = ({ onEa
                   <button
                     key={num}
                     onClick={() => handleKeypadPress(num)}
-                    className="py-3 text-lg font-bold font-mono bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-200 rounded-xl shadow-xs text-slate-800 transition-colors"
+                    className="py-3.5 sm:py-3 text-xl sm:text-lg font-bold font-mono min-h-[48px] active:scale-95 bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-200 rounded-xl shadow-xs text-slate-800 transition-all"
                   >
                     {num}
                   </button>
                 ))}
                 <button
                   onClick={() => handleKeypadPress(',')}
-                  className="py-3 text-2xl font-black font-mono bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl shadow-xs transition-colors"
+                  className="py-3.5 sm:py-3 text-2xl font-black font-mono min-h-[48px] active:scale-95 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-xl shadow-xs transition-all"
                   title="Dấu phẩy phân cách"
                 >
                   ,
                 </button>
                 <button
                   onClick={() => handleKeypadPress('0')}
-                  className="py-3 text-lg font-bold font-mono bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-200 rounded-xl shadow-xs text-slate-800 transition-colors"
+                  className="py-3.5 sm:py-3 text-xl sm:text-lg font-bold font-mono min-h-[48px] active:scale-95 bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-200 rounded-xl shadow-xs text-slate-800 transition-all"
                 >
                   0
                 </button>
                 <button
                   onClick={() => handleKeypadPress('backspace')}
-                  className="py-3 flex items-center justify-center bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl shadow-xs transition-colors"
+                  className="py-3.5 sm:py-3 flex items-center justify-center min-h-[48px] active:scale-95 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl shadow-xs transition-all"
                   title="Xóa 1 ký tự"
                 >
                   <Delete className="w-5 h-5" />

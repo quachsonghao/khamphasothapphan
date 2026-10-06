@@ -20,48 +20,68 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenReference,
   totalStars,
 }) => {
-  const navTabs: { id: MathMode; label: string; icon: React.ReactNode }[] = [
-    {
-      id: 'visual-lab',
-      label: 'Mô hình 100 Ô & Trục Số',
-      icon: <Grid className="w-4 h-4" />
-    },
+  const navTabs: { id: MathMode; label: string; shortLabel: string; icon: React.ReactNode }[] = [
     {
       id: 'place-value',
       label: 'Bảng Các Hàng & Giá Trị',
+      shortLabel: 'Bảng Các Hàng',
       icon: <Layers className="w-4 h-4" />
     },
     {
       id: 'place-match-game',
       label: 'Trò Chơi Ghép Hàng & Giá Trị',
+      shortLabel: 'Ghép Hàng & Giá Trị',
       icon: <Sparkles className="w-4 h-4" />
     },
     {
       id: 'read-write',
       label: 'Luyện Đọc & Viết Số',
+      shortLabel: 'Đọc & Viết Số',
       icon: <Edit3 className="w-4 h-4" />
     },
     {
       id: 'game-arena',
       label: 'Đấu Trường Trò Chơi',
+      shortLabel: 'Đấu Trường Game',
       icon: <Gamepad2 className="w-4 h-4" />
     }
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Brand Logo & Name */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-xs">
-              <span className="font-mono font-black text-lg">0,1</span>
+          {/* Brand Logo & Name - Lively, Colorful, Animated */}
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            {/* Lively Logo Badge */}
+            <div className="relative shrink-0 group cursor-pointer">
+              {/* Outer vibrant rainbow gradient ring */}
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-600 p-0.5 shadow-md shadow-indigo-500/20 transition-transform group-hover:scale-105 active:scale-95">
+                {/* Inner badge container */}
+                <div className="w-full h-full bg-gradient-to-br from-indigo-700 via-indigo-600 to-purple-800 rounded-[14px] flex items-center justify-center text-white relative overflow-hidden">
+                  {/* Subtle decorative glow orb */}
+                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-400/50 rounded-full blur-xs pointer-events-none" />
+                  
+                  {/* Animated decimal numbers */}
+                  <div className="flex items-center font-mono font-black text-sm sm:text-base tracking-tight select-none">
+                    <span className="text-white drop-shadow-xs">0</span>
+                    <span className="text-amber-300 text-lg font-black leading-none -mx-0.5 animate-bounce drop-shadow-xs">,</span>
+                    <span className="text-emerald-300 drop-shadow-xs">5</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Lively floating star badge */}
+              <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-gradient-to-tr from-amber-300 to-yellow-400 rounded-full border-2 border-white flex items-center justify-center text-amber-900 shadow-xs">
+                <Sparkles className="w-2.5 h-2.5 text-amber-900 fill-amber-400" />
+              </div>
             </div>
-            <div>
-              <span className="font-bold text-slate-900 text-base sm:text-lg tracking-tight block leading-tight">
+
+            <div className="min-w-0">
+              <span className="font-extrabold text-slate-900 text-sm sm:text-base md:text-lg tracking-tight block leading-tight truncate">
                 Khám Phá Số Thập Phân
               </span>
-              <span className="text-[11px] text-slate-500 font-medium hidden sm:block">
+              <span className="text-xs text-slate-500 font-semibold hidden sm:block truncate">
                 Toán Học Tương Tác Lớp 5 · GDPT Mới
               </span>
             </div>
@@ -132,7 +152,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Mobile Sub-Navigation Bar */}
-        <div className="lg:hidden flex items-center justify-between gap-1 py-2 border-t border-slate-100 overflow-x-auto no-scrollbar">
+        <div className="lg:hidden py-2 border-t border-slate-100 overflow-x-auto no-scrollbar touch-scroll flex items-center gap-1.5 px-0.5">
           {navTabs.map((tab) => {
             const isActive = currentMode === tab.id;
             return (
@@ -142,14 +162,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                   sounds.playClick();
                   onSelectMode(tab.id);
                 }}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0 transition-all ${
                   isActive
                     ? 'bg-indigo-600 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-700'
+                    : 'bg-slate-100 text-slate-700 active:bg-slate-200'
                 }`}
               >
                 {tab.icon}
-                <span>{tab.label}</span>
+                <span className="font-bold">{tab.shortLabel}</span>
               </button>
             );
           })}

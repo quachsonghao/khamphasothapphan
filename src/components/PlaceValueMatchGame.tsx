@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, Trophy, Star, Sparkles, CheckCircle2, XCircle, RotateCcw, ArrowRight, Lightbulb, HelpCircle, Layers, Link2, Shuffle, GraduationCap, PlusCircle, Check } from 'lucide-react';
+import { Volume2, Trophy, Star, Sparkles, CheckCircle2, XCircle, RotateCcw, ArrowRight, Layers, Link2, PlusCircle, Check, Eye, HelpCircle } from 'lucide-react';
 import { sounds } from '../utils/audio';
 import { speakVietnamese, readDecimalNumber } from '../utils/vietnameseNumberReader';
 import { Fraction } from './Fraction';
@@ -32,7 +32,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 375,
     decStr: '482',
     displayNumber: '375,482',
-    title: 'Số 375,482 (3 chữ số phần nguyên, 3 chữ số phần thập phân)',
+    title: 'Số 375,482',
     hundreds: 3,
     tens: 7,
     ones: 5,
@@ -45,7 +45,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 68,
     decStr: '054',
     displayNumber: '68,054',
-    title: 'Số 68,054 (chú ý số 0 ở hàng phần mười)',
+    title: 'Số 68,054',
     hundreds: 0,
     tens: 6,
     ones: 8,
@@ -58,7 +58,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 9,
     decStr: '403',
     displayNumber: '9,403',
-    title: 'Số 9,403 (chú ý số 0 ở hàng phần trăm)',
+    title: 'Số 9,403',
     hundreds: 0,
     tens: 0,
     ones: 9,
@@ -71,7 +71,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 142,
     decStr: '75',
     displayNumber: '142,75',
-    title: 'Số 142,75 (hàng phần nghìn bằng 0)',
+    title: 'Số 142,75',
     hundreds: 1,
     tens: 4,
     ones: 2,
@@ -84,7 +84,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 0,
     decStr: '865',
     displayNumber: '0,865',
-    title: 'Số 0,865 (phần nguyên bằng 0)',
+    title: 'Số 0,865',
     hundreds: 0,
     tens: 0,
     ones: 0,
@@ -97,7 +97,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 504,
     decStr: '007',
     displayNumber: '504,007',
-    title: 'Số 504,007 (chữ số 7 ở hàng phần nghìn)',
+    title: 'Số 504,007',
     hundreds: 5,
     tens: 0,
     ones: 4,
@@ -110,7 +110,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 82,
     decStr: '39',
     displayNumber: '82,39',
-    title: 'Số 82,39 (8 chục, 2 đơn vị, 3 phần mười, 9 phần trăm)',
+    title: 'Số 82,39',
     hundreds: 0,
     tens: 8,
     ones: 2,
@@ -123,7 +123,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 120,
     decStr: '04',
     displayNumber: '120,04',
-    title: 'Số 120,04 (1 trăm, 2 chục, 4 phần trăm)',
+    title: 'Số 120,04',
     hundreds: 1,
     tens: 2,
     ones: 0,
@@ -136,7 +136,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 7,
     decStr: '915',
     displayNumber: '7,915',
-    title: 'Số 7,915 (7 đơn vị, 9 phần mười, 1 phần trăm, 5 phần nghìn)',
+    title: 'Số 7,915',
     hundreds: 0,
     tens: 0,
     ones: 7,
@@ -149,7 +149,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 250,
     decStr: '8',
     displayNumber: '250,8',
-    title: 'Số 250,8 (2 trăm, 5 chục, 8 phần mười)',
+    title: 'Số 250,8',
     hundreds: 2,
     tens: 5,
     ones: 0,
@@ -162,7 +162,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 0,
     decStr: '028',
     displayNumber: '0,028',
-    title: 'Số 0,028 (2 phần trăm, 8 phần nghìn)',
+    title: 'Số 0,028',
     hundreds: 0,
     tens: 0,
     ones: 0,
@@ -175,7 +175,7 @@ const PRESET_CHALLENGES: MatchChallenge[] = [
     whole: 409,
     decStr: '6',
     displayNumber: '409,6',
-    title: 'Số 409,6 (4 trăm, 9 đơn vị, 6 phần mười)',
+    title: 'Số 409,6',
     hundreds: 4,
     tens: 0,
     ones: 9,
@@ -198,6 +198,7 @@ export interface ValueCardOption {
 
 export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarnStar, totalStars = 0 }) => {
   const [gameSubMode, setGameSubMode] = useState<'slotting' | 'trio-connect'>('slotting');
+  const [mobileLayoutMode, setMobileLayoutMode] = useState<'two-blocks' | 'wide-table'>('two-blocks');
   const [challenges, setChallenges] = useState<MatchChallenge[]>(PRESET_CHALLENGES);
   const [challengeIdx, setChallengeIdx] = useState<number>(0);
 
@@ -250,6 +251,7 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
     id: string;
     placeKey: PlaceKey;
     placeName: string;
+    placeShortName: string;
     digit: number;
     partName: string;
     valNum?: number;
@@ -263,6 +265,7 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
   const [selectedTrioPlace, setSelectedTrioPlace] = useState<string | null>(null);
   const [selectedTrioValue, setSelectedTrioValue] = useState<string | null>(null);
   const [matchedTrioKeys, setMatchedTrioKeys] = useState<PlaceKey[]>([]);
+  const [mobileTrioTab, setMobileTrioTab] = useState<'digit' | 'place' | 'value'>('digit');
 
   // Setup challenge pools
   const initChallenge = (c: MatchChallenge) => {
@@ -375,6 +378,7 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
         id: `trio-${k}`,
         placeKey: k,
         placeName: cfg.name,
+        placeShortName: cfg.shortName,
         digit,
         partName: cfg.partName,
         valNum: cfg.part === 'decimal' ? digit : undefined,
@@ -392,6 +396,7 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
     setSelectedTrioDigit(null);
     setSelectedTrioPlace(null);
     setSelectedTrioValue(null);
+    setMobileTrioTab('digit');
   };
 
   useEffect(() => {
@@ -411,7 +416,6 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
       return;
     }
 
-    // Validate format: [0-9]{1,3}(,[0-9]{1,3})?
     const parts = raw.split(',');
     if (parts.length > 2) {
       setTeacherInputError('Số thập phân chỉ chứa tối đa 1 dấu phẩy phân cách.');
@@ -428,11 +432,11 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
 
     const wholeNum = parseInt(wholeStr, 10);
     if (wholeNum > 999) {
-      setTeacherInputError('Phần nguyên tối đa 3 chữ số (từ 0 đến 999) để vừa với bảng các hàng tiểu học.');
+      setTeacherInputError('Phần nguyên tối đa 3 chữ số (từ 0 đến 999).');
       return;
     }
 
-    const cleanDecStr = decPartStr.slice(0, 3); // Max 3 decimal digits
+    const cleanDecStr = decPartStr.slice(0, 3);
     const paddedDec = cleanDecStr.padEnd(3, '0');
 
     const h = Math.floor((wholeNum % 1000) / 100);
@@ -450,7 +454,7 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
       whole: wholeNum,
       decStr: cleanDecStr,
       displayNumber: fullFormatted,
-      title: `Đề bài của giáo viên: ${fullFormatted}`,
+      title: `Số ${fullFormatted}`,
       isCustom: true,
       hundreds: h,
       tens: t,
@@ -463,7 +467,7 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
     setChallenges(prev => [newCustomChallenge, ...prev]);
     setChallengeIdx(0);
     initChallenge(newCustomChallenge);
-    setTeacherSuccessMsg(`Đã tạo đề bài thành công số ${fullFormatted}! Học sinh có thể bắt đầu làm bài ngay.`);
+    setTeacherSuccessMsg(`Đã tạo bài tập số ${fullFormatted}!`);
     setTeacherInput('');
   };
 
@@ -485,7 +489,6 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
       });
       setSelectedDigitFromBank(null);
     } else if (slottedDigits[placeKey] !== null) {
-      // Remove from slot back to pool
       const val = slottedDigits[placeKey]!;
       setSlottedDigits(prev => ({ ...prev, [placeKey]: null }));
       setAvailableDigitPool(prev => [...prev, { id: `d-ret-${Date.now()}`, digit: val }]);
@@ -510,7 +513,6 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
       });
       setSelectedValueFromBank(null);
     } else if (slottedValues[placeKey] !== null) {
-      // Unslot value card back to pool
       const card = slottedValues[placeKey]!;
       setSlottedValues(prev => ({ ...prev, [placeKey]: null }));
       setAvailableValuePool(prev => [...prev, card]);
@@ -545,7 +547,7 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
     if (isDigitsCorrect && isValuesCorrect) {
       sounds.playSuccess();
       try {
-        confetti({ particleCount: 55, spread: 75, origin: { y: 0.6 } });
+        confetti({ particleCount: 65, spread: 80, origin: { y: 0.6 } });
       } catch {}
       setScore(prev => prev + 200);
       setStreak(prev => prev + 1);
@@ -553,14 +555,14 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
 
       setSlottingFeedback({
         isCorrect: true,
-        msg: `Tuyệt vời! Bạn đã xếp đúng vị trí các chữ số và gán chuẩn xác giá trị toán học của từng hàng trong số ${c.displayNumber}!`
+        msg: `Chính xác! Bạn đã xếp đúng vị trí chữ số và gán chuẩn xác giá trị của từng hàng trong số ${c.displayNumber}!`
       });
     } else {
       sounds.playError();
       setStreak(0);
       let errorTip = '';
       if (!isDigitsCorrect && !isValuesCorrect) {
-        errorTip = 'Chưa đúng cả vị trí chữ số lẫn giá trị tương ứng. Hãy kiểm tra lại hàng phần nguyên (bên trái) và hàng phần thập phân (bên phải).';
+        errorTip = 'Chưa đúng vị trí chữ số và giá trị. Hãy kiểm tra lại phần nguyên và phần thập phân.';
       } else if (!isDigitsCorrect) {
         errorTip = 'Bạn xếp chữ số vào các hàng chưa hoàn toàn chính xác.';
       } else {
@@ -576,12 +578,16 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
   // Trio Connect Handlers
   const handleTrioDigitClick = (id: string) => {
     sounds.playClick();
-    setSelectedTrioDigit(selectedTrioDigit === id ? null : id);
+    const nextVal = selectedTrioDigit === id ? null : id;
+    setSelectedTrioDigit(nextVal);
+    if (nextVal) setMobileTrioTab('place');
   };
 
   const handleTrioPlaceClick = (id: string) => {
     sounds.playClick();
-    setSelectedTrioPlace(selectedTrioPlace === id ? null : id);
+    const nextVal = selectedTrioPlace === id ? null : id;
+    setSelectedTrioPlace(nextVal);
+    if (nextVal) setMobileTrioTab('value');
   };
 
   const handleTrioValueClick = (id: string) => {
@@ -606,7 +612,7 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
         if (nextMatched.length === trioItems.length) {
           sounds.playFanfare();
           try {
-            confetti({ particleCount: 60, spread: 80 });
+            confetti({ particleCount: 65, spread: 80 });
           } catch {}
           if (onEarnStar) onEarnStar(1);
         }
@@ -614,13 +620,15 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
         setSelectedTrioDigit(null);
         setSelectedTrioPlace(null);
         setSelectedTrioValue(null);
+        setMobileTrioTab('digit');
       } else {
         sounds.playError();
         setTimeout(() => {
           setSelectedTrioDigit(null);
           setSelectedTrioPlace(null);
           setSelectedTrioValue(null);
-        }, 500);
+          setMobileTrioTab('digit');
+        }, 550);
       }
     }
   }, [selectedTrioDigit, selectedTrioPlace, selectedTrioValue]);
@@ -644,115 +652,210 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
   const wholeKeys: PlaceKey[] = ['hundreds', 'tens', 'ones'];
   const decimalKeys: PlaceKey[] = ['tenths', 'hundredths', 'thousandths'];
 
-  return (
-    <div className="space-y-6">
-      {/* Teacher Number Input Section */}
-      <div className="bg-gradient-to-r from-rose-50 via-white to-amber-50 rounded-2xl p-5 border border-rose-200/90 shadow-xs space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-rose-600 text-white flex items-center justify-center shadow-xs">
-              <GraduationCap className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-slate-900">
-                Góc Giáo Viên & Phụ Huynh: Đặt Đề Bài Tùy Ý
-              </h3>
-              <p className="text-[11px] text-slate-500">
-                Nhập bất kỳ số thập phân nào để tạo bài tập thực hành ngay cho học sinh
-              </p>
-            </div>
-          </div>
+  // Helper render a single Place Column (used in both desktop table and mobile blocks)
+  const renderPlaceColumn = (k: PlaceKey, isDecimal: boolean) => {
+    const cfg = PLACE_CONFIG[k];
+    const digitVal = slottedDigits[k];
+    const isDigitCorrect = slottingSubmitted && digitVal === currentChallenge[k];
+    const isDigitWrong = slottingSubmitted && digitVal !== currentChallenge[k];
 
-          <span className="text-[11px] font-semibold text-rose-700 bg-rose-100/70 px-2.5 py-1 rounded-md self-start sm:self-auto">
-            Không hiện gợi ý đáp án trước khi làm
+    const card = slottedValues[k];
+    const isValCorrect = slottingSubmitted && card?.correctPlaceKey === k;
+    const isValWrong = slottingSubmitted && card !== null && card.correctPlaceKey !== k;
+
+    return (
+      <div
+        key={k}
+        className={`flex flex-col rounded-2xl border-2 p-2.5 transition-all ${
+          isDecimal
+            ? 'bg-indigo-50/50 border-indigo-200'
+            : 'bg-emerald-50/50 border-emerald-200'
+        }`}
+      >
+        {/* Place Header */}
+        <div className="text-center pb-2 border-b border-slate-200/60 mb-2">
+          <span className="text-xs sm:text-sm font-bold text-slate-800 block truncate">
+            {cfg.name}
+          </span>
+          <span className="text-[11px] font-mono font-medium text-slate-500 mt-0.5 inline-block">
+            {isDecimal ? (
+              <span className="inline-flex items-center gap-0.5">
+                × <Fraction num={cfg.fractionNumerator || 1} den={cfg.fractionDenominator || 10} size="xs" />
+              </span>
+            ) : (
+              `× ${cfg.multiplier}`
+            )}
           </span>
         </div>
 
-        <form onSubmit={handleTeacherSubmitNumber} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-          <input
-            type="text"
-            placeholder="Ví dụ: 84,295 hoặc 305,08 hoặc 0,74"
-            value={teacherInput}
-            onChange={(e) => {
-              setTeacherInput(e.target.value);
-              setTeacherInputError(null);
-            }}
-            className="flex-1 px-3.5 py-2 text-xs font-mono font-bold bg-white border border-rose-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-          />
+        {/* Slot 1: Chữ số */}
+        <div className="space-y-1 mb-2.5">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block text-center">
+            Chữ số
+          </span>
           <button
-            type="submit"
-            className="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-xs transition-colors inline-flex items-center justify-center gap-1.5 whitespace-nowrap"
+            onClick={() => handleSlotDigit(k)}
+            className={`w-full h-15 sm:h-16 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${
+              isDigitCorrect
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-md scale-102'
+                : isDigitWrong
+                ? 'bg-rose-50 border-rose-400 text-rose-700'
+                : digitVal !== null
+                ? isDecimal
+                  ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                  : 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                : selectedDigitFromBank
+                ? 'bg-amber-100/80 border-dashed border-amber-500 text-amber-800 animate-pulse font-bold'
+                : 'bg-white border-dashed border-slate-300 hover:border-slate-400 text-slate-400'
+            }`}
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>Giao Đề Bài Này</span>
+            {digitVal !== null ? (
+              <span className="text-3xl font-mono font-black">{digitVal}</span>
+            ) : (
+              <span className="text-xs font-semibold text-slate-400">
+                {selectedDigitFromBank ? 'Đặt vào đây' : 'Trống'}
+              </span>
+            )}
+            {isDigitCorrect && <CheckCircle2 className="w-4 h-4 text-white mt-0.5" />}
+            {isDigitWrong && <XCircle className="w-4 h-4 text-rose-600 mt-0.5" />}
           </button>
+        </div>
+
+        {/* Slot 2: Thẻ giá trị */}
+        <div className="space-y-1">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block text-center">
+            Giá trị
+          </span>
+          <button
+            onClick={() => handleSlotValue(k)}
+            className={`w-full h-14 sm:h-15 rounded-xl border-2 flex flex-col items-center justify-center transition-all p-1 ${
+              isValCorrect
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                : isValWrong
+                ? 'bg-rose-50 border-rose-400 text-rose-700'
+                : card !== null
+                ? isDecimal
+                  ? 'bg-indigo-50 border-indigo-400 text-indigo-900 shadow-xs'
+                  : 'bg-emerald-50 border-emerald-400 text-emerald-900 shadow-xs'
+                : selectedValueFromBank
+                ? 'bg-amber-100/80 border-dashed border-amber-500 text-amber-800 animate-pulse font-bold'
+                : 'bg-white border-dashed border-slate-300 hover:border-slate-400 text-slate-400'
+            }`}
+          >
+            {card !== null ? (
+              card.isFraction && card.num !== undefined && card.den ? (
+                <Fraction num={card.num} den={card.den} size="sm" className={isValCorrect ? 'text-white' : 'text-indigo-900'} />
+              ) : (
+                <span className="text-sm font-mono font-bold truncate max-w-full">{card.valLabel}</span>
+              )
+            ) : (
+              <span className="text-xs font-semibold text-slate-400">
+                {selectedValueFromBank ? 'Đặt vào đây' : 'Trống'}
+              </span>
+            )}
+            {isValCorrect && <CheckCircle2 className="w-3.5 h-3.5 text-white mt-0.5" />}
+            {isValWrong && <XCircle className="w-3.5 h-3.5 text-rose-600 mt-0.5" />}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-5 max-w-full">
+      {/* Teacher Number Input Section - Clean, High-Contrast */}
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border-2 border-rose-200 shadow-xs">
+        <form onSubmit={handleTeacherSubmitNumber} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="px-2.5 py-1 rounded-lg bg-rose-600 text-white text-xs font-bold uppercase tracking-wider">
+              Giáo viên
+            </span>
+            <span className="text-sm font-bold text-slate-900">
+              Nhập số bất kỳ:
+            </span>
+          </div>
+
+          <div className="flex-1 flex items-center gap-2 min-w-0">
+            <input
+              type="text"
+              placeholder="Nhập số thập phân (Ví dụ: 84,295 hoặc 305,08 hoặc 0,74)"
+              value={teacherInput}
+              onChange={(e) => {
+                setTeacherInput(e.target.value);
+                setTeacherInputError(null);
+              }}
+              className="flex-1 min-w-0 px-3.5 py-2 text-sm sm:text-base font-mono font-bold bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm font-bold bg-rose-600 hover:bg-rose-700 active:scale-95 text-white rounded-xl shadow-xs transition-all inline-flex items-center justify-center gap-1.5 shrink-0"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>Giao bài</span>
+            </button>
+          </div>
         </form>
 
         {teacherInputError && (
-          <div className="text-xs text-rose-600 font-medium flex items-center gap-1">
-            <XCircle className="w-3.5 h-3.5 shrink-0" />
+          <div className="mt-2.5 text-xs text-rose-600 font-bold flex items-center gap-1.5">
+            <XCircle className="w-4 h-4 shrink-0" />
             <span>{teacherInputError}</span>
           </div>
         )}
 
         {teacherSuccessMsg && (
-          <div className="text-xs text-emerald-700 font-medium flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+          <div className="mt-2.5 text-xs text-emerald-700 font-bold flex items-center gap-1.5">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>{teacherSuccessMsg}</span>
           </div>
         )}
       </div>
 
       {/* Main Game Card */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs space-y-6">
+      <div className="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-sm space-y-5 sm:space-y-6">
         {/* Header & Modes */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
           <div>
-            <div className="text-xs font-semibold tracking-wider text-rose-600 uppercase mb-1 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Đấu Trường Ghép Hàng & Giá Trị</span>
+            <div className="text-xs font-bold tracking-wider text-rose-600 uppercase mb-0.5 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4" />
+              <span>Đấu Trường Toán Học</span>
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-              Xác Định Đúng Vị Trí Hàng & Giá Trị Của Số
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              Ghép Đúng Vị Trí Hàng & Giá Trị
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Học sinh tự tư duy để ghép chữ số và giá trị tương ứng vào đúng các hàng của phần nguyên và phần thập phân.
-            </p>
           </div>
 
           {/* Sub-mode switchers */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200">
-              <button
-                onClick={() => {
-                  sounds.playClick();
-                  setGameSubMode('slotting');
-                }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  gameSubMode === 'slotting' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600'
-                }`}
-              >
-                1. Xếp Chữ Số & Giá Trị Vào Bảng
-              </button>
-              <button
-                onClick={() => {
-                  sounds.playClick();
-                  setGameSubMode('trio-connect');
-                }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  gameSubMode === 'trio-connect' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600'
-                }`}
-              >
-                2. Nối 3 Cột Nhanh
-              </button>
-            </div>
+          <div className="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200 shrink-0 self-start sm:self-auto">
+            <button
+              onClick={() => {
+                sounds.playClick();
+                setGameSubMode('slotting');
+              }}
+              className={`px-3 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${
+                gameSubMode === 'slotting' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              1. Xếp Vào Bảng
+            </button>
+            <button
+              onClick={() => {
+                sounds.playClick();
+                setGameSubMode('trio-connect');
+              }}
+              className={`px-3 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all ${
+                gameSubMode === 'trio-connect' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              2. Nối 3 Cột
+            </button>
           </div>
         </div>
 
         {/* Challenge selection pills */}
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 overflow-x-auto max-w-full py-1">
-            <span className="text-xs text-slate-400 font-medium mr-1">Đề có sẵn:</span>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-scroll py-1 max-w-full">
+            <span className="text-xs text-slate-500 font-bold shrink-0 mr-1">Đề có sẵn:</span>
             {challenges.slice(0, 10).map((c, i) => (
               <button
                 key={c.id}
@@ -760,264 +863,178 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
                   sounds.playClick();
                   setChallengeIdx(i);
                 }}
-                className={`px-2.5 py-1 text-xs font-mono font-bold rounded-lg transition-all ${
+                className={`px-3 py-1.5 text-xs sm:text-sm font-mono font-bold rounded-lg shrink-0 transition-all ${
                   challengeIdx === i
                     ? 'bg-rose-600 text-white shadow-xs'
                     : 'bg-slate-100 hover:bg-rose-50 text-slate-700'
                 }`}
               >
                 {c.displayNumber}
-                {c.isCustom && <span className="ml-1 text-[9px] text-amber-300">★</span>}
+                {c.isCustom && <span className="ml-1 text-[10px] text-amber-300">★</span>}
               </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
             <button
               onClick={resetCurrentChallenge}
-              className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
-              title="Xóa làm lại từ đầu"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+              title="Làm lại đề này"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Làm lại</span>
             </button>
             <button
               onClick={nextChallenge}
-              className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition-colors"
             >
-              <span>Đề tiếp theo</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>Đề kế tiếp</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Current Target Number Box */}
-        <div className="bg-gradient-to-r from-rose-50 via-amber-50 to-indigo-50 border border-rose-200 rounded-2xl p-4 text-center shadow-xs space-y-1">
-          <span className="text-xs font-bold text-rose-700 uppercase tracking-wider block">
-            Đề bài số thập phân:
-          </span>
-          <div className="flex items-center justify-center gap-3">
-            <div className="text-4xl sm:text-5xl font-black font-mono text-slate-900 tracking-wider">
+        {/* Current Target Number Box - Clean Decimal Number */}
+        <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 sm:p-5 text-center shadow-xs">
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <div className="text-4xl sm:text-6xl font-mono font-black text-slate-900 tracking-wider select-all">
               {currentChallenge.displayNumber}
             </div>
+
+            {/* Sound Pronunciation Button */}
             <button
               onClick={handlePlayTTS}
               disabled={isSpeaking}
-              className="p-2.5 rounded-xl bg-white text-rose-600 hover:bg-rose-100 border border-rose-200 shadow-xs transition-colors"
-              title="Nghe phát âm chuẩn"
+              className="p-2.5 sm:p-3 rounded-2xl bg-white text-rose-600 hover:bg-rose-50 border-2 border-rose-200 shadow-xs transition-colors shrink-0 active:scale-95 cursor-pointer"
+              title="Nghe phát âm chuẩn tiếng Việt"
             >
-              <Volume2 className="w-5 h-5" />
+              <Volume2 className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
-          <p className="text-xs text-slate-600 font-medium">
-            {currentChallenge.title}
-          </p>
         </div>
 
         {/* ======================= SUB-MODE 1: SLOTTING ======================= */}
         {gameSubMode === 'slotting' ? (
           <div className="space-y-5">
-            {/* Place Slots Table (NO SPOILERS AT THE BOTTOM) */}
-            <div className="overflow-x-auto">
-              <div className="min-w-[680px]">
-                {/* Headers */}
-                <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs font-bold">
-                  <div className="col-span-3 bg-emerald-50 text-emerald-800 border border-emerald-200 p-2 rounded-xl">
-                    PHẦN NGUYÊN (Bên trái dấu phẩy)
-                  </div>
-                  <div className="col-span-1 bg-rose-50 text-rose-600 border border-rose-200 p-2 rounded-xl">
-                    DẤU PHẨY
-                  </div>
-                  <div className="col-span-3 bg-indigo-50 text-indigo-800 border border-indigo-200 p-2 rounded-xl">
-                    PHẦN THẬP PHÂN (Bên phải dấu phẩy)
-                  </div>
-                </div>
+            {/* Mobile Layout Switcher (< 768px only) */}
+            <div className="flex md:hidden items-center justify-between bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+              <span className="text-xs font-bold text-slate-700 ml-1.5">Bố cục bảng:</span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setMobileLayoutMode('two-blocks')}
+                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                    mobileLayoutMode === 'two-blocks' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600'
+                  }`}
+                >
+                  📱 2 Khối Rõ Ràng
+                </button>
+                <button
+                  onClick={() => setMobileLayoutMode('wide-table')}
+                  className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
+                    mobileLayoutMode === 'wide-table' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-600'
+                  }`}
+                >
+                  ↔ Bảng Ngang (Cuộn)
+                </button>
+              </div>
+            </div>
 
-                {/* Column Place Names */}
-                <div className="grid grid-cols-7 gap-2 mb-2 text-center">
-                  {wholeKeys.map(k => (
-                    <div key={k} className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700">
-                      {PLACE_CONFIG[k].name}
+            {/* DESKTOP VIEW & MOBILE WIDE-TABLE VIEW: Single Spacious Table */}
+            <div className={`${mobileLayoutMode === 'two-blocks' ? 'hidden md:block' : 'block'}`}>
+              <div className="overflow-x-auto touch-scroll no-scrollbar -mx-2 px-2 sm:mx-0 sm:px-0">
+                <div className="min-w-[680px]">
+                  {/* Top classification banner */}
+                  <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs sm:text-sm font-bold">
+                    <div className="col-span-3 bg-emerald-100/80 text-emerald-900 border-2 border-emerald-300 py-2 rounded-xl">
+                      PHẦN NGUYÊN (Bên trái dấu phẩy)
                     </div>
-                  ))}
-                  <div className="flex items-center justify-center text-2xl font-black text-rose-600">
-                    ,
-                  </div>
-                  {decimalKeys.map(k => (
-                    <div key={k} className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700">
-                      {PLACE_CONFIG[k].name}
+                    <div className="col-span-1 bg-rose-100/80 text-rose-800 border-2 border-rose-300 py-2 rounded-xl flex items-center justify-center font-black">
+                      PHẨY (,)
                     </div>
-                  ))}
-                </div>
-
-                {/* ROW 1: Droppable Digit Slots */}
-                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                  1. Chữ số ở từng hàng:
-                </div>
-                <div className="grid grid-cols-7 gap-2 mb-4">
-                  {wholeKeys.map(k => {
-                    const val = slottedDigits[k];
-                    const isCorrect = slottingSubmitted && val === currentChallenge[k];
-                    const isWrong = slottingSubmitted && val !== currentChallenge[k];
-
-                    return (
-                      <button
-                        key={k}
-                        onClick={() => handleSlotDigit(k)}
-                        className={`h-18 rounded-2xl border-2 flex flex-col items-center justify-center transition-all ${
-                          isCorrect
-                            ? 'bg-emerald-500 text-white border-emerald-500 shadow-md scale-102'
-                            : isWrong
-                            ? 'bg-rose-50 border-rose-400 text-rose-700'
-                            : val !== null
-                            ? 'bg-emerald-50 border-emerald-400 text-emerald-900 shadow-xs'
-                            : selectedDigitFromBank
-                            ? 'bg-amber-50/70 border-dashed border-amber-400 hover:bg-amber-100/80 animate-pulse'
-                            : 'bg-slate-50 border-dashed border-slate-300 hover:border-slate-400 text-slate-400'
-                        }`}
-                      >
-                        {val !== null ? (
-                          <span className="text-3xl font-mono font-extrabold">{val}</span>
-                        ) : (
-                          <span className="text-[10px] font-sans">Đặt chữ số</span>
-                        )}
-                        {isCorrect && <CheckCircle2 className="w-3.5 h-3.5 text-white mt-0.5" />}
-                        {isWrong && <XCircle className="w-3.5 h-3.5 text-rose-600 mt-0.5" />}
-                      </button>
-                    );
-                  })}
-
-                  <div className="flex items-center justify-center">
-                    <span className="text-4xl font-black text-rose-600 font-mono select-none">,</span>
+                    <div className="col-span-3 bg-indigo-100/80 text-indigo-900 border-2 border-indigo-300 py-2 rounded-xl">
+                      PHẦN THẬP PHÂN (Bên phải dấu phẩy)
+                    </div>
                   </div>
 
-                  {decimalKeys.map(k => {
-                    const val = slottedDigits[k];
-                    const isCorrect = slottingSubmitted && val === currentChallenge[k];
-                    const isWrong = slottingSubmitted && val !== currentChallenge[k];
+                  {/* 7 Columns Grid */}
+                  <div className="grid grid-cols-7 gap-2">
+                    {wholeKeys.map(k => renderPlaceColumn(k, false))}
 
-                    return (
-                      <button
-                        key={k}
-                        onClick={() => handleSlotDigit(k)}
-                        className={`h-18 rounded-2xl border-2 flex flex-col items-center justify-center transition-all ${
-                          isCorrect
-                            ? 'bg-emerald-500 text-white border-emerald-500 shadow-md scale-102'
-                            : isWrong
-                            ? 'bg-rose-50 border-rose-400 text-rose-700'
-                            : val !== null
-                            ? 'bg-indigo-50 border-indigo-400 text-indigo-900 shadow-xs'
-                            : selectedDigitFromBank
-                            ? 'bg-amber-50/70 border-dashed border-amber-400 hover:bg-amber-100/80 animate-pulse'
-                            : 'bg-slate-50 border-dashed border-slate-300 hover:border-slate-400 text-slate-400'
-                        }`}
-                      >
-                        {val !== null ? (
-                          <span className="text-3xl font-mono font-extrabold">{val}</span>
-                        ) : (
-                          <span className="text-[10px] font-sans">Đặt chữ số</span>
-                        )}
-                        {isCorrect && <CheckCircle2 className="w-3.5 h-3.5 text-white mt-0.5" />}
-                        {isWrong && <XCircle className="w-3.5 h-3.5 text-rose-600 mt-0.5" />}
-                      </button>
-                    );
-                  })}
-                </div>
+                    {/* Comma Divider Column */}
+                    <div className="flex flex-col items-center justify-center p-2 rounded-2xl bg-rose-50 border-2 border-rose-200">
+                      <span className="text-4xl font-mono font-black text-rose-600">,</span>
+                      <span className="text-[11px] font-bold text-rose-700 mt-2">Dấu phẩy</span>
+                    </div>
 
-                {/* ROW 2: Droppable Mathematical Value Card Slots (NO SPOILERS - Student must place cards!) */}
-                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                  2. Thẻ giá trị toán học của từng hàng (Học sinh tự gắp thẻ từ kho bên dưới):
-                </div>
-                <div className="grid grid-cols-7 gap-2 mb-4">
-                  {wholeKeys.map(k => {
-                    const card = slottedValues[k];
-                    const isCorrect = slottingSubmitted && card?.correctPlaceKey === k;
-                    const isWrong = slottingSubmitted && card !== null && card.correctPlaceKey !== k;
-
-                    return (
-                      <button
-                        key={k}
-                        onClick={() => handleSlotValue(k)}
-                        className={`h-16 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${
-                          isCorrect
-                            ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
-                            : isWrong
-                            ? 'bg-rose-50 border-rose-400 text-rose-700'
-                            : card !== null
-                            ? 'bg-emerald-50 border-emerald-400 text-emerald-900 shadow-xs'
-                            : selectedValueFromBank
-                            ? 'bg-amber-50/70 border-dashed border-amber-400 hover:bg-amber-100/80 animate-pulse'
-                            : 'bg-slate-50 border-dashed border-slate-300 hover:border-slate-400 text-slate-400'
-                        }`}
-                      >
-                        {card !== null ? (
-                          <span className="text-sm font-mono font-bold">{card.valLabel}</span>
-                        ) : (
-                          <span className="text-[10px] font-sans">Đặt thẻ giá trị</span>
-                        )}
-                        {isCorrect && <CheckCircle2 className="w-3 h-3 text-white mt-0.5" />}
-                        {isWrong && <XCircle className="w-3 h-3 text-rose-600 mt-0.5" />}
-                      </button>
-                    );
-                  })}
-
-                  <div className="flex items-center justify-center text-xs text-slate-400 font-medium">
-                    ---
+                    {decimalKeys.map(k => renderPlaceColumn(k, true))}
                   </div>
-
-                  {decimalKeys.map(k => {
-                    const card = slottedValues[k];
-                    const isCorrect = slottingSubmitted && card?.correctPlaceKey === k;
-                    const isWrong = slottingSubmitted && card !== null && card.correctPlaceKey !== k;
-
-                    return (
-                      <button
-                        key={k}
-                        onClick={() => handleSlotValue(k)}
-                        className={`h-16 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${
-                          isCorrect
-                            ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
-                            : isWrong
-                            ? 'bg-rose-50 border-rose-400 text-rose-700'
-                            : card !== null
-                            ? 'bg-indigo-50 border-indigo-400 text-indigo-900 shadow-xs'
-                            : selectedValueFromBank
-                            ? 'bg-amber-50/70 border-dashed border-amber-400 hover:bg-amber-100/80 animate-pulse'
-                            : 'bg-slate-50 border-dashed border-slate-300 hover:border-slate-400 text-slate-400'
-                        }`}
-                      >
-                        {card !== null ? (
-                          card.isFraction && card.num !== undefined && card.den ? (
-                            <Fraction num={card.num} den={card.den} size="xs" className={isCorrect ? 'text-white' : 'text-indigo-900'} />
-                          ) : (
-                            <span className="text-xs font-mono font-bold">{card.valLabel}</span>
-                          )
-                        ) : (
-                          <span className="text-[10px] font-sans">Đặt thẻ giá trị</span>
-                        )}
-                        {isCorrect && <CheckCircle2 className="w-3 h-3 text-white mt-0.5" />}
-                        {isWrong && <XCircle className="w-3 h-3 text-rose-600 mt-0.5" />}
-                      </button>
-                    );
-                  })}
                 </div>
               </div>
             </div>
 
-            {/* TWO SCRAMBLED BANKS (Kho chữ số & Kho giá trị) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Bank 1: Scrambled Digits */}
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-800">
-                    Kho Chữ Số ({availableDigitPool.length} chữ số còn lại):
+            {/* MOBILE TWO-BLOCKS VIEW (< 768px): Super spacious, clear, 3-columns per block, no micro text */}
+            <div className={`space-y-4 ${mobileLayoutMode === 'two-blocks' ? 'block md:hidden' : 'hidden'}`}>
+              {/* BLOCK 1: Phần Nguyên */}
+              <div className="bg-emerald-50/40 rounded-2xl p-3 border-2 border-emerald-300 space-y-2">
+                <div className="flex items-center justify-between pb-1.5 border-b border-emerald-200">
+                  <span className="text-xs font-black text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
+                    PHẦN NGUYÊN
                   </span>
-                  <span className="text-[10px] text-slate-500">Bấm chọn ➔ thả vào hàng 1</span>
+                  <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
+                    {currentChallenge.whole}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {wholeKeys.map(k => renderPlaceColumn(k, false))}
+                </div>
+              </div>
+
+              {/* Big Comma Divider Badge */}
+              <div className="flex items-center justify-center gap-2 py-1">
+                <div className="h-0.5 flex-1 bg-rose-200" />
+                <div className="px-4 py-1 rounded-full bg-rose-600 text-white font-mono font-black text-lg flex items-center gap-1 shadow-xs">
+                  <span>Dấu phẩy</span>
+                  <span className="text-xl">,</span>
+                </div>
+                <div className="h-0.5 flex-1 bg-rose-200" />
+              </div>
+
+              {/* BLOCK 2: Phần Thập Phân */}
+              <div className="bg-indigo-50/40 rounded-2xl p-3 border-2 border-indigo-300 space-y-2">
+                <div className="flex items-center justify-between pb-1.5 border-b border-indigo-200">
+                  <span className="text-xs font-black text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block" />
+                    PHẦN THẬP PHÂN
+                  </span>
+                  <span className="text-xs font-mono font-bold text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded-md">
+                    {currentChallenge.decStr}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {decimalKeys.map(k => renderPlaceColumn(k, true))}
+                </div>
+              </div>
+            </div>
+
+            {/* TWO SCRAMBLED BANKS - Big tactile cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              {/* Bank 1: Scrambled Digits */}
+              <div className="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-bold text-slate-900">
+                    Kho Chữ Số ({availableDigitPool.length} thẻ)
+                  </span>
+                  {selectedDigitFromBank && (
+                    <span className="text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-md animate-pulse">
+                      Đang chọn: {selectedDigitFromBank.digit}
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 min-h-[48px]">
+                <div className="flex flex-wrap items-center gap-2.5 min-h-[52px]">
                   {availableDigitPool.length === 0 ? (
-                    <span className="text-xs text-emerald-700 font-medium italic">
+                    <span className="text-sm text-emerald-700 font-bold italic">
                       ✓ Đã xếp hết chữ số lên bảng.
                     </span>
                   ) : (
@@ -1031,10 +1048,10 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
                             setSelectedDigitFromBank(isSelected ? null : item);
                             setSelectedValueFromBank(null);
                           }}
-                          className={`w-11 h-11 rounded-xl text-xl font-mono font-extrabold border-2 transition-all flex items-center justify-center ${
+                          className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl text-2xl font-mono font-black border-2 transition-all flex items-center justify-center active:scale-95 shadow-sm ${
                             isSelected
-                              ? 'bg-rose-600 text-white border-rose-600 shadow-md scale-110 ring-2 ring-rose-300'
-                              : 'bg-white hover:bg-rose-50 text-slate-800 border-slate-200 shadow-xs'
+                              ? 'bg-rose-600 text-white border-rose-600 shadow-lg scale-110 ring-4 ring-rose-200'
+                              : 'bg-white hover:bg-rose-50 text-slate-900 border-slate-300'
                           }`}
                         >
                           {item.digit}
@@ -1045,18 +1062,22 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
                 </div>
               </div>
 
-              {/* Bank 2: Scrambled Value Cards (NO ANSWER LABELS) */}
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              {/* Bank 2: Scrambled Value Cards */}
+              <div className="p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-800">
-                    Kho Thẻ Giá Trị ({availableValuePool.length} thẻ còn lại):
+                  <span className="text-sm font-bold text-slate-900">
+                    Kho Thẻ Giá Trị ({availableValuePool.length} thẻ)
                   </span>
-                  <span className="text-[10px] text-slate-500">Bấm chọn ➔ thả vào hàng 2</span>
+                  {selectedValueFromBank && (
+                    <span className="text-xs font-bold text-indigo-700 bg-indigo-100 px-2.5 py-0.5 rounded-md animate-pulse">
+                      Đang chọn thẻ giá trị
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 min-h-[48px]">
+                <div className="flex flex-wrap items-center gap-2.5 min-h-[52px]">
                   {availableValuePool.length === 0 ? (
-                    <span className="text-xs text-emerald-700 font-medium italic">
+                    <span className="text-sm text-emerald-700 font-bold italic">
                       ✓ Đã xếp hết thẻ giá trị lên bảng.
                     </span>
                   ) : (
@@ -1070,16 +1091,16 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
                             setSelectedValueFromBank(isSelected ? null : card);
                             setSelectedDigitFromBank(null);
                           }}
-                          className={`px-3 py-2 rounded-xl border-2 transition-all flex items-center justify-center ${
+                          className={`px-3.5 py-2.5 min-h-[48px] rounded-2xl border-2 transition-all flex items-center justify-center active:scale-95 shadow-sm ${
                             isSelected
-                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-md scale-105 ring-2 ring-indigo-300'
-                              : 'bg-white hover:bg-indigo-50 text-slate-800 border-slate-200 shadow-xs'
+                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-lg scale-105 ring-4 ring-indigo-200'
+                              : 'bg-white hover:bg-indigo-50 text-slate-900 border-slate-300'
                           }`}
                         >
                           {card.isFraction && card.num !== undefined && card.den ? (
-                            <Fraction num={card.num} den={card.den} size="xs" className={isSelected ? 'text-white' : 'text-indigo-900'} />
+                            <Fraction num={card.num} den={card.den} size="sm" className={isSelected ? 'text-white' : 'text-indigo-900'} />
                           ) : (
-                            <span className="text-xs font-mono font-bold">{card.valLabel}</span>
+                            <span className="text-sm sm:text-base font-mono font-black">{card.valLabel}</span>
                           )}
                         </button>
                       );
@@ -1090,21 +1111,21 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
             </div>
 
             {/* Check button & Feedback */}
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
                 onClick={handleVerifySlotting}
                 disabled={
                   Object.values(slottedDigits).some(v => v === null) ||
                   Object.values(slottedValues).some(v => v === null)
                 }
-                className="px-6 py-2.5 rounded-xl font-bold text-xs bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white shadow-xs transition-colors"
+                className="px-6 py-3 rounded-xl font-black text-sm bg-rose-600 hover:bg-rose-700 active:scale-95 disabled:opacity-50 text-white shadow-md transition-all cursor-pointer disabled:cursor-not-allowed"
               >
                 Kiểm Tra Kết Quả
               </button>
 
               <button
                 onClick={resetCurrentChallenge}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900"
+                className="px-4 py-2.5 text-sm font-bold text-slate-600 hover:text-slate-900 cursor-pointer"
               >
                 Làm lại từ đầu
               </button>
@@ -1112,19 +1133,19 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
 
             {slottingFeedback && (
               <div
-                className={`p-4 rounded-xl border text-xs leading-relaxed flex items-start gap-2.5 ${
+                className={`p-4 rounded-2xl border-2 text-sm leading-relaxed flex items-start gap-3 shadow-xs ${
                   slottingFeedback.isCorrect
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
-                    : 'bg-rose-50 border-rose-200 text-rose-900'
+                    ? 'bg-emerald-50 border-emerald-300 text-emerald-950'
+                    : 'bg-rose-50 border-rose-300 text-rose-950'
                 }`}
               >
                 {slottingFeedback.isCorrect ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
                 ) : (
-                  <XCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                  <XCircle className="w-6 h-6 text-rose-600 shrink-0 mt-0.5" />
                 )}
                 <div>
-                  <div className="font-bold mb-0.5">
+                  <div className="font-black text-base mb-0.5">
                     {slottingFeedback.isCorrect ? 'Chính xác xuất sắc!' : 'Chưa đúng, hãy suy nghĩ thêm:'}
                   </div>
                   <div>{slottingFeedback.msg}</div>
@@ -1134,29 +1155,52 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
           </div>
         ) : (
           /* ======================= SUB-MODE 2: 3-COLUMN SPEED TRIO ======================= */
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <Link2 className="w-4 h-4 text-rose-600" />
-                  <span>Nối Nhanh 3 Cột: Chữ Số ↔ Tên Hàng ↔ Giá Trị Toán Học</span>
-                </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Bấm chọn 1 thẻ ở Cột 1 (Chữ số) ➔ 1 thẻ ở Cột 2 (Tên hàng) ➔ 1 thẻ ở Cột 3 (Giá trị) để ghép bộ 3 hoàn chỉnh.
-                </p>
-              </div>
+          <div className="space-y-5">
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                <Link2 className="w-5 h-5 text-rose-600 shrink-0" />
+                <span>Nối 3 Cột: Chữ Số ↔ Tên Hàng ↔ Giá Trị</span>
+              </h3>
 
-              <div className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
-                Đã ghép: {matchedTrioKeys.length} / {trioItems.length} bộ
+              <div className="text-xs sm:text-sm font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl shrink-0">
+                Đã ghép: {matchedTrioKeys.length} / {trioItems.length}
               </div>
             </div>
 
-            {/* 3 Columns Display */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Mobile Tab Selector (< 768px) for effortless tapping on phones */}
+            <div className="flex md:hidden items-center justify-between bg-slate-100 p-1 rounded-xl border border-slate-200">
+              <button
+                onClick={() => setMobileTrioTab('digit')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  mobileTrioTab === 'digit' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-700'
+                }`}
+              >
+                1. Chữ Số {selectedTrioDigit ? '✓' : ''}
+              </button>
+              <button
+                onClick={() => setMobileTrioTab('place')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  mobileTrioTab === 'place' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-700'
+                }`}
+              >
+                2. Tên Hàng {selectedTrioPlace ? '✓' : ''}
+              </button>
+              <button
+                onClick={() => setMobileTrioTab('value')}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  mobileTrioTab === 'value' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-700'
+                }`}
+              >
+                3. Giá Trị {selectedTrioValue ? '✓' : ''}
+              </button>
+            </div>
+
+            {/* 3 Columns Display - Spacious, high contrast */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
               {/* Column 1: Chữ số trong số */}
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block bg-slate-100 p-2 rounded-lg text-center">
-                  1. Chữ Số
+              <div className={`space-y-2 ${mobileTrioTab === 'digit' ? 'block' : 'hidden md:block'}`}>
+                <span className="text-xs font-black text-slate-800 uppercase tracking-wider block bg-slate-100 p-2.5 rounded-xl text-center border border-slate-200">
+                  1. Chữ Số Trong Số
                 </span>
                 <div className="space-y-2">
                   {trioItems.map(item => {
@@ -1167,19 +1211,19 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
                         key={item.id}
                         disabled={isMatched}
                         onClick={() => handleTrioDigitClick(item.id)}
-                        className={`w-full p-3.5 rounded-xl border text-left transition-all flex items-center justify-between ${
+                        className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-center justify-between active:scale-95 shadow-xs ${
                           isMatched
-                            ? 'bg-emerald-50 border-emerald-300 text-emerald-800 opacity-60'
+                            ? 'bg-emerald-50 border-emerald-300 text-emerald-800 opacity-50'
                             : isSelected
-                            ? 'bg-rose-600 text-white border-rose-600 shadow-md scale-102 ring-2 ring-rose-300'
-                            : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 shadow-xs'
+                            ? 'bg-rose-600 text-white border-rose-600 shadow-md ring-4 ring-rose-200 scale-102'
+                            : 'bg-white hover:bg-slate-50 text-slate-900 border-slate-200'
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-xs text-slate-500">Chữ số:</span>
-                          <strong className="text-2xl font-mono">{item.digit}</strong>
+                          <span className="text-xs text-slate-500 font-bold">Chữ số:</span>
+                          <strong className="text-2xl sm:text-3xl font-mono font-black">{item.digit}</strong>
                         </div>
-                        <span className={`text-[10px] px-2 py-0.5 rounded ${isSelected ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${isSelected ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-700'}`}>
                           {item.partName}
                         </span>
                       </button>
@@ -1189,8 +1233,8 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
               </div>
 
               {/* Column 2: Tên hàng tương ứng */}
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block bg-slate-100 p-2 rounded-lg text-center">
+              <div className={`space-y-2 ${mobileTrioTab === 'place' ? 'block' : 'hidden md:block'}`}>
+                <span className="text-xs font-black text-slate-800 uppercase tracking-wider block bg-slate-100 p-2.5 rounded-xl text-center border border-slate-200">
                   2. Tên Hàng
                 </span>
                 <div className="space-y-2">
@@ -1202,16 +1246,16 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
                         key={item.id}
                         disabled={isMatched}
                         onClick={() => handleTrioPlaceClick(item.id)}
-                        className={`w-full p-3.5 rounded-xl border text-left transition-all flex items-center justify-between ${
+                        className={`w-full p-3.5 rounded-2xl border-2 text-left transition-all flex items-center justify-between min-h-[58px] active:scale-95 shadow-xs ${
                           isMatched
-                            ? 'bg-emerald-50 border-emerald-300 text-emerald-800 opacity-60'
+                            ? 'bg-emerald-50 border-emerald-300 text-emerald-800 opacity-50'
                             : isSelected
-                            ? 'bg-amber-500 text-white border-amber-500 shadow-md scale-102 ring-2 ring-amber-300'
-                            : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 shadow-xs'
+                            ? 'bg-amber-500 text-white border-amber-500 shadow-md ring-4 ring-amber-200 scale-102'
+                            : 'bg-white hover:bg-slate-50 text-slate-900 border-slate-200'
                         }`}
                       >
-                        <span className="text-sm font-bold">{item.placeName}</span>
-                        {isMatched && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                        <span className="text-sm sm:text-base font-black truncate">{item.placeName}</span>
+                        {isMatched && <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 ml-1" />}
                       </button>
                     );
                   })}
@@ -1219,8 +1263,8 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
               </div>
 
               {/* Column 3: Giá trị toán học */}
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block bg-slate-100 p-2 rounded-lg text-center">
+              <div className={`space-y-2 ${mobileTrioTab === 'value' ? 'block' : 'hidden md:block'}`}>
+                <span className="text-xs font-black text-slate-800 uppercase tracking-wider block bg-slate-100 p-2.5 rounded-xl text-center border border-slate-200">
                   3. Giá Trị Toán Học
                 </span>
                 <div className="space-y-2">
@@ -1232,25 +1276,25 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
                         key={item.id}
                         disabled={isMatched}
                         onClick={() => handleTrioValueClick(item.id)}
-                        className={`w-full p-3 rounded-xl border text-left transition-all flex items-center justify-between min-h-[56px] ${
+                        className={`w-full p-3 rounded-2xl border-2 text-left transition-all flex items-center justify-between min-h-[58px] active:scale-95 shadow-xs ${
                           isMatched
-                            ? 'bg-emerald-50 border-emerald-300 text-emerald-800 opacity-60'
+                            ? 'bg-emerald-50 border-emerald-300 text-emerald-800 opacity-50'
                             : isSelected
-                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-md scale-102 ring-2 ring-indigo-300'
-                            : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200 shadow-xs'
+                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-md ring-4 ring-indigo-200 scale-102'
+                            : 'bg-white hover:bg-slate-50 text-slate-900 border-slate-200'
                         }`}
                       >
                         <div className="flex items-center gap-2">
                           {item.valNum !== undefined && item.valDen ? (
                             <div className="inline-flex items-center gap-1.5 font-bold font-mono">
                               <Fraction num={item.valNum} den={item.valDen} size="sm" className={isSelected ? 'text-white' : 'text-indigo-900'} />
-                              <span className="text-xs text-slate-400">(= {item.valDecText})</span>
+                              <span className={`text-xs ${isSelected ? 'text-indigo-100' : 'text-slate-400'}`}>(= {item.valDecText})</span>
                             </div>
                           ) : (
-                            <span className="text-base font-bold font-mono">{item.valDecText}</span>
+                            <span className="text-base sm:text-lg font-black font-mono">{item.valDecText}</span>
                           )}
                         </div>
-                        {isMatched && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                        {isMatched && <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 ml-1" />}
                       </button>
                     );
                   })}
@@ -1259,19 +1303,16 @@ export const PlaceValueMatchGame: React.FC<PlaceValueMatchGameProps> = ({ onEarn
             </div>
 
             {matchedTrioKeys.length === trioItems.length && (
-              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-2">
+              <div className="p-5 bg-emerald-50 border-2 border-emerald-300 rounded-2xl text-center space-y-2 shadow-xs">
                 <Sparkles className="w-7 h-7 text-emerald-600 mx-auto" />
-                <div className="font-bold text-emerald-900 text-base">
-                  🎉 Xuất sắc! Bạn đã nối chính xác tất cả các chữ số với hàng và giá trị!
+                <div className="font-black text-emerald-950 text-base sm:text-lg">
+                  🎉 Hoàn thành xuất sắc! Bạn đã nối đúng toàn bộ các hàng!
                 </div>
-                <p className="text-xs text-emerald-700">
-                  Kỹ năng xác định hàng của phần nguyên và phần thập phân của bạn rất vững vàng.
-                </p>
                 <button
                   onClick={nextChallenge}
-                  className="px-4 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-xs transition-colors inline-flex items-center gap-1.5 mt-2"
+                  className="px-5 py-2.5 text-sm font-black bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-xs transition-colors inline-flex items-center gap-1.5 mt-1 cursor-pointer"
                 >
-                  <span>Chinh phục bài tiếp theo</span>
+                  <span>Chinh phục đề tiếp theo</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

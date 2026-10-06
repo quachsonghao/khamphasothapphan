@@ -6,18 +6,17 @@
 import React, { useState, useEffect } from 'react';
 import { MathMode } from './types/math';
 import { Navbar } from './components/Navbar';
-import { VisualGridLab } from './components/VisualGridLab';
 import { PlaceValueTable } from './components/PlaceValueTable';
 import { ReadingWritingStudio } from './components/ReadingWritingStudio';
 import { GameArena } from './components/GameArena';
 import { PlaceValueMatchGame } from './components/PlaceValueMatchGame';
 import { ReferenceModal } from './components/ReferenceModal';
 import { sounds } from './utils/audio';
-import { Grid, Layers, Edit3, Gamepad2, Sparkles, CheckCircle2, Heart } from 'lucide-react';
+import { Layers, Edit3, Gamepad2, Sparkles, CheckCircle2, Heart } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function App() {
-  const [currentMode, setCurrentMode] = useState<MathMode>('visual-lab');
+  const [currentMode, setCurrentMode] = useState<MathMode>('place-value');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [isReferenceOpen, setIsReferenceOpen] = useState<boolean>(false);
   const [totalStars, setTotalStars] = useState<number>(0);
@@ -54,12 +53,8 @@ export default function App() {
       />
 
       {/* Main Educational Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-4 sm:space-y-6">
         {/* Active Module Viewport */}
-        {currentMode === 'visual-lab' && (
-          <VisualGridLab onEarnStar={() => handleEarnStar(1)} />
-        )}
-
         {currentMode === 'place-value' && (
           <PlaceValueTable onEarnStar={() => handleEarnStar(1)} />
         )}

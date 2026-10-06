@@ -2,7 +2,7 @@
  * Types and definitions for Decimal Math Interactive Learning
  */
 
-export type MathMode = 'visual-lab' | 'place-value' | 'read-write' | 'place-match-game' | 'game-arena';
+export type MathMode = 'place-value' | 'place-match-game' | 'read-write' | 'game-arena';
 
 export interface PlaceValueBreakdown {
   thousands: number; // Hàng nghìn (phần nguyên)

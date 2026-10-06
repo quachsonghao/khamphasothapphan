@@ -17,39 +17,39 @@ export const Fraction: React.FC<FractionProps> = ({
 }) => {
   const sizeStyles = {
     xs: {
-      container: 'text-[11px]',
+      container: 'text-xs',
       whole: 'text-xs font-bold mr-1',
-      line: 'border-b',
-      num: 'px-1 pb-0.5',
-      den: 'px-1 pt-0.5',
+      line: 'border-b-[1.5px] border-current',
+      num: 'px-1 pb-0.5 leading-tight',
+      den: 'px-1 pt-0.5 leading-tight',
     },
     sm: {
-      container: 'text-xs',
+      container: 'text-sm',
       whole: 'text-sm font-bold mr-1.5',
-      line: 'border-b',
-      num: 'px-1.5 pb-0.5',
-      den: 'px-1.5 pt-0.5',
+      line: 'border-b-2 border-current',
+      num: 'px-1.5 pb-0.5 leading-tight',
+      den: 'px-1.5 pt-0.5 leading-tight',
     },
     md: {
-      container: 'text-sm',
-      whole: 'text-base font-bold mr-1.5',
-      line: 'border-b-1.5 sm:border-b-2',
-      num: 'px-2 pb-0.5',
-      den: 'px-2 pt-0.5',
+      container: 'text-base',
+      whole: 'text-lg font-bold mr-2',
+      line: 'border-b-2 border-current',
+      num: 'px-2 pb-0.5 leading-tight',
+      den: 'px-2 pt-0.5 leading-tight',
     },
     lg: {
-      container: 'text-base',
-      whole: 'text-xl font-bold mr-2',
-      line: 'border-b-2',
-      num: 'px-2.5 pb-0.5',
-      den: 'px-2.5 pt-0.5',
+      container: 'text-lg',
+      whole: 'text-2xl font-bold mr-2.5',
+      line: 'border-b-[2.5px] border-current',
+      num: 'px-2.5 pb-1 leading-tight',
+      den: 'px-2.5 pt-1 leading-tight',
     },
     xl: {
-      container: 'text-xl',
-      whole: 'text-2xl font-bold mr-2.5',
-      line: 'border-b-2',
-      num: 'px-3 pb-1',
-      den: 'px-3 pt-1',
+      container: 'text-2xl',
+      whole: 'text-3xl font-bold mr-3',
+      line: 'border-b-3 border-current',
+      num: 'px-3 pb-1 leading-tight',
+      den: 'px-3 pt-1 leading-tight',
     },
   };
 
@@ -59,14 +59,14 @@ export const Fraction: React.FC<FractionProps> = ({
     <span
       className={`inline-flex items-center align-middle font-mono font-bold select-none ${currentSize.container} ${className}`}
     >
-      {whole !== undefined && whole !== null && whole !== '' && (
-        <span className={`${currentSize.whole}`}>{whole}</span>
+      {whole !== undefined && whole !== null && (
+        <span className={currentSize.whole}>{whole}</span>
       )}
-      <span className="inline-flex flex-col items-center justify-center leading-none text-center">
-        <span className={`block w-full border-current ${currentSize.line} ${currentSize.num}`}>
+      <span className="inline-flex flex-col items-center justify-center text-center">
+        <span className={`${currentSize.num} ${currentSize.line} w-full`}>
           {num}
         </span>
-        <span className={`block w-full ${currentSize.den}`}>
+        <span className={`${currentSize.den} w-full`}>
           {den}
         </span>
       </span>
